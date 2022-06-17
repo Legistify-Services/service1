@@ -10,35 +10,19 @@ exports.signIn = async (req, res) => {
 		if (!existingUser)
 			return res.status(404).json({status: false, message: "User doesn't exist"});
 
-		// const isPasswordCorrect = await bcrypt.compare(
-		//   password,
-		//   existingUser.password
-		// );
-
-		// if (!isPasswordCorrect)
-		//   return res
-		//     .status(401)
-		//     .json({ status: false, message: "Invalid password" });
-
-		const token = jwt.sign(
-			{
-				id: existingUser._id,
-				email: existingUser.email,
-			},
-			process.env.JWT_PRIVATE_KEY,
-			{
-				expiresIn: '24h',
-			}
-		);
+		const payload = {
+			id: existingUser._id,
+			email: existingUser.email,
+			orgId: existingUser.orgId,
+		};
+		const token = jwt.sign(payload, process.env.JWT_PRIVATE_KEY, {
+			expiresIn: '24h',
+		});
 
 		res.status(200).json({
 			staus: true,
-			message: 'Sign In Success',
-			result: {
-				userName: existingUser.userName,
-				email: existingUser.email,
-			},
-			token : token,
+			message: 'Service 1 Sign In Success',
+			token: token,
 		});
 	} catch (err) {
 		console.log(err);
@@ -47,12 +31,12 @@ exports.signIn = async (req, res) => {
 };
 
 exports.signUp = async (req, res) => {
-	const {email, password, userName} = req.body;
+	const {email, password, userName, orgId} = req.body;
 
 	if (!email || !password || !userName) {
 		return res.status(400).json({
 			status: false,
-			message: 'userName, email, password required',
+			message: 'userName, email, password, orgId required',
 		});
 	}
 
@@ -63,29 +47,26 @@ exports.signUp = async (req, res) => {
 
 		const hashedPassword = await bcrypt.hash(password, 12);
 		const newUser = await UserModal.create({
-			email,
+			email: email,
 			password: hashedPassword,
 			userName: userName,
+			orgId: orgId,
 		});
 
-		const token = jwt.sign(
-			{id: newUser._id, email: newUser.email},
-			process.env.JWT_PRIVATE_KEY,
-			{
-				expiresIn: '1h',
-			}
-		);
+		const payload = {
+			id: newUser._id,
+			email: newUser.email,
+			orgId: newUser.orgId,
+		};
+
+		const token = jwt.sign(payload, process.env.JWT_PRIVATE_KEY, {
+			expiresIn: '1h',
+		});
 
 		res.status(201).json({
 			status: true,
-			data: {
-				message: 'Sign Up success',
-				user: {
-					userName: newUser.userName,
-					email: newUser.email,
-				},
-				'x-auth-token': token,
-			},
+			message: 'Service 1 Sign Up success',
+			token: token,
 		});
 	} catch (error) {
 		console.log(error);
@@ -97,5 +78,5 @@ exports.signUp = async (req, res) => {
 };
 
 exports.findRole = async (req, res) => {
-	res.status(200).json({status: true, message: 'find role not set up yet...'});
+	res.status(200).json({status: true, data: req.user});
 };
