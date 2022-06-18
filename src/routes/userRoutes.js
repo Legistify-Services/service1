@@ -5,7 +5,7 @@ const auth = require("../middleware/auth");
 router.get("/", (req, res) => {
   res.json({ message: "signin, signup, findrole" });
 });
-router.post("/signin", signIn);
+router.get("/signin", signIn);
 router.post("/signup", signUp);
 router.get("/findrole", auth, findRole);
 
