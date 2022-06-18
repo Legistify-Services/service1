@@ -4,19 +4,24 @@ dotenv.config();
 const cors = require("cors");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const cookieParser = require('cookie-parser');
+const cookieParser = require("cookie-parser");
+const credentials = require("./credentials");
+const corsOptions = require("./corsOptions");
 
 app.use(cookieParser());
+
+app.use(credentials);
+app.use(cors(corsOptions));
+
 // middleware
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
-app.use(cors({credentials: true, origin: 'https://service1-frontend-dev.legistrak.com'}));
 
 // routers
-app.get('/',(req,res)=>{
+app.get("/", (req, res) => {
   console.log("kkk");
-  res.send("service 1 running Succesfully")
-})
+  res.send("service 1 running Succesfully");
+});
 app.use("/api/user", require("./routes/userRoutes"));
 
 const PORT = process.env.PORT || 5011;
