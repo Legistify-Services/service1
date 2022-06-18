@@ -12,7 +12,7 @@ exports.signIn = async (req, res) => {
 	try {
 		let refreshToken = req.cookies.refreshToken;
 		console.log(refreshToken)
-		const decodedTokenData = jwt.verify(refreshToken, process.env.JWT_PRIVATE_KEY);
+		const decodedTokenData = jwt.verify(refreshToken, process.env.JWT_PRIVATE_KEY_FOR_AUTH_BACKEND);
 
 		if(!decodedTokenData) return res.status(500).send({ status: false, code: 400, msg: "invalid token" });
 		console.log(decodedTokenData)
