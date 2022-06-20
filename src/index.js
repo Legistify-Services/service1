@@ -5,8 +5,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-const credentials = require("./credentials");
-const corsOptions = require("./corsOptions");
+import { credentials, corsOptions } from "./credentialsAndCorsOptions";
 
 app.use(cookieParser());
 
